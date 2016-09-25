@@ -1,0 +1,97 @@
+
+<html>
+<head>
+<title></title>
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+<body>
+
+
+<h1 id="Miscellaneous-helper-functions">Miscellaneous helper functions</h1>
+
+<h2 id="Number-parsing-and-emitting">Number parsing and emitting</h2>
+
+<ul>
+
+<li><p></p>
+
+<pre><code> int pdfout_strtoint_null (fz_context *ctx, const char *string);</code></pre>
+
+<p>Throw if <code>string</code> does not contain a null-terminated <code>int</code> number.</p>
+
+</li>
+<li><p></p>
+
+<pre><code> int pdfout_strtoint (fz_context *ctx, const char *nptr, char **endptr);</code></pre>
+
+<p>Like <code>strtol</code>, but throw exception on <code>int</code> overflow.</p>
+
+</li>
+<li><p></p>
+
+<pre><code> float pdfout_strtof (fz_context *ctx, const char *string);</code></pre>
+
+<p>Throw if <code>string</code> does not contain a null-terminated <code>float</code> number.</p>
+
+</li>
+<li><p></p>
+
+<pre><code> int pdfout_snprintf_imp (fz_context *ctx, char *buf, int size, const char *fmt, ...);
+  int pdfout_vsnprintf_imp (fz_context *ctx, char *buf, int size, const char *fmt, va_list ap);
+  </code></pre>
+
+<p>Safe frontends to <code>sprintf</code>. Throw if the result is longer than <code>size</code>.</p>
+
+</li>
+<li><p></p>
+
+<pre><code> int pdfout_snprintf (fz_context *ctx, char *buf, const char *fmt, ...);
+ int pdfout_vsnprintf (fz_context *ctx, char *buf, const char *fmt, va_list ap);</code></pre>
+
+<p>Macros. Defined as</p>
+
+<pre><code>  pdfout_snprintf_imp (ctx, buff, sizeof buff, fmt, ## args)
+  pdfout_vsnprintf_imp (ctx, buff, sizeof buff, fmt, ap)</code></pre>
+
+</li>
+</ul>
+
+<h2 id="Exception-handling-and-warnings">Exception handling and warnings</h2>
+
+<ul>
+
+<li><p></p>
+
+<pre><code> void pdfout_throw (fz_context *ctx, const char *fmt, ...);</code></pre>
+
+<p>Call mupdf&#39;s <code>fz_throw</code> with error type <code>FZ_ERROR_GENERIC</code>.</p>
+
+</li>
+<li><p></p>
+
+<pre><code> void pdfout_vthrow (fz_context *ctx, const char *fmt, va_list ap);</code></pre>
+
+<p>va_list version of <code>pdfout_throw</code>.</p>
+
+</li>
+<li><p></p>
+
+<pre><code> void pdfout_throw_errno (fz_context *ctx, const char *fmt, ...);</code></pre>
+
+<p>Like <code>pdfout_throw</code>, but show the message produced by <code>strerror</code> if errno is set.</p>
+
+</li>
+<li><p></p>
+
+<pre><code> void pdfout_warn (fz_context *ctx, const char *fmt, ...);</code></pre>
+
+<p>Equivalent to <code>fz_warn</code>.</p>
+
+</li>
+</ul>
+
+<h2 id="IO-functions">IO functions</h2>
+
+</body>
+</html>
+

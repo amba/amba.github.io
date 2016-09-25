@@ -1,0 +1,166 @@
+
+<html>
+<head>
+<title></title>
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+<body>
+
+
+<h1 id="Unicode-Data">Unicode Data</h1>
+
+<p>The <code>pdfout_data</code> type holds a complex data structure. This is the data format used to interface with the parsers and emitters described below.</p>
+
+<p>It is organized into 3 different types:</p>
+
+<ul>
+
+<li><p>Scalar:</p>
+
+<p>A scalar holds an UTF-8 string, which may contain embedded null bytes and does not have to be null-terminated.</p>
+
+</li>
+<li><p>Array:</p>
+
+<p>An array holds an array of pointers to <code>pdfout_data</code> types.</p>
+
+</li>
+<li><p>Hash:</p>
+
+<p>A hash is a set of key-value pairs. Both key and value are pointers to <code>pdfout_data</code> types. The keys must be unique scalars.</p>
+
+</li>
+</ul>
+
+<h2 id="Functions">Functions</h2>
+
+<p>Calling one of the <code>pdfout_data_scalar_*</code> functions on an ARRAY or HASH will throw an exception. Likewise for the <code>pdfout_data_array_*</code> and <code>pdfout_data_hash_*</code> functions.</p>
+
+<h3 id="Type-queries">Type queries</h3>
+
+<p>These never throw.</p>
+
+<pre><code> bool pdfout_data_is_scalar (fz_context *ctx, pdfout_data *data);
+ bool pdfout_data_is_array (fz_context *ctx, pdfout_data *data);
+ bool pdfout_data_is_hash (fz_context *ctx, pdfout_data *data);</code></pre>
+
+<h3 id="Scalars">Scalars</h3>
+
+<p>Create a new scalar with</p>
+
+<pre><code> pdfout_data *pdfout_data_scalar_new (fz_context *ctx, const char *value,
+                                      int len);</code></pre>
+
+<p>Return the value of a scalar with</p>
+
+<pre><code> char *pdfout_data_scalar_get (fz_context *ctx, pdfout_data *scalar, int *len);</code></pre>
+
+<p>where the length of the string is stored in <code>*len</code>.</p>
+
+<p>Comparison with a string is done with</p>
+
+<pre><code> bool pdfout_data_scalar_eq (fz_context *ctx, pdfout_data *scalar, const char *s);</code></pre>
+
+<h3 id="Arrays">Arrays</h3>
+
+<p>Create a new array with</p>
+
+<pre><code> pdfout_data *pdfout_data_array_new (fz_context *ctx);</code></pre>
+
+<p>The length of an array is obtained with</p>
+
+<pre><code> int pdfout_data_array_len (fz_context *ctx, pdfout_data *array);</code></pre>
+
+<p>Elements of an array are accessed with</p>
+
+<pre><code> pdfout_data *pdfout_data_array_get (fz_context *ctx, pdfout_data *array,
+                                     int pos);</code></pre>
+
+<p>New elements are appended with</p>
+
+<pre><code> void pdfout_data_array_push (fz_context *ctx, pdfout_data *array,
+                              pdfout_data *entry);</code></pre>
+
+<h3 id="Hashes">Hashes</h3>
+
+<p>Create a new hash with</p>
+
+<pre><code> pdfout_data *pdfout_data_hash_new (fz_context *ctx);</code></pre>
+
+<p>The number of key-value pairs in a hash is obtained with</p>
+
+<pre><code> int pdfout_data_hash_len (fz_context *ctx, pdfout_data *hash);</code></pre>
+
+<p>New key-value pairs are appended with</p>
+
+<pre><code> void pdfout_data_hash_push (fz_context *ctx, pdfout_data *hash,
+                             pdfout_data *key, pdfout_data *value);</code></pre>
+
+<p><code>key</code> has to be a scalar. The keys in a hash must be unique. Trying to add a key which is already present in the hash will throw an exception.</p>
+
+<p>There are multiple functions to access a hashes key-value pairs.</p>
+
+<pre><code> pdfout_data *pdfout_data_hash_get_key (fz_context *ctx, pdfout_data *hash,
+                                        int i);
+ pdfout_data *pdfout_data_hash_get_value (fz_context *ctx, pdfout_data *hash,
+                                          int i);</code></pre>
+
+<p>These extract key and value of the i-th key-value pair.</p>
+
+<h4 id="Hash-Convenience-Functions">Hash Convenience Functions</h4>
+
+<pre><code> pdfout_data *pdfout_data_hash_gets (fz_context *ctx, pdfout_data *hash,
+                                     char *key);</code></pre>
+
+<p>Searches the hash for the key <code>key</code> and returns the key&#39;s value. If no key is found, NULL is returned.</p>
+
+<p>If it is known that the key is a null-terminated string, and the value is a scalar, use this convenience function:</p>
+
+<pre><code> void pdfout_data_hash_get_key_value (fz_context *ctx, pdfout_data *hash,
+                                      char **key, char **value, int *value_len,
+                                      int i);</code></pre>
+
+<p>Throw if the value is not a scalar.</p>
+
+<p>To add a null-terminated key with a scalar value, use this function:</p>
+
+<pre><code> void pdfout_data_hash_push_key_value (fz_context *ctx, pdfout_data *hash,
+                                       const char *key, const char *value,
+                                       int value_len)</code></pre>
+
+<h3 id="Destructor">Destructor</h3>
+
+<pre><code> void pdfout_data_drop (fz_context *ctx, pdfout_data *data);</code></pre>
+
+<p>Recursively free.</p>
+
+<h1 id="Parsing-and-Emitting">Parsing and Emitting</h1>
+
+<p>A <code>pdfout_parser</code> reades a <code>pdfout_data</code> object from a <code>fz_stream</code>. Conversely, a <code>pdfout_emitter</code> writes a <code>pdfout_data</code> object to a <code>fz_output</code>.</p>
+
+<p>This is done with these functions:</p>
+
+<pre><code> pdfout_data *pdfout_parser_parse (fz_context *ctx, pdfout_parser *parser);
+ 
+ void pdfout_emitter_emit (fz_context *ctx, pdfout_emitter *emitter,
+                          pdfout_data *data);
+ </code></pre>
+
+<h2 id="JSON">JSON</h2>
+
+<p>A JSON parser/emitter is created with these functions:</p>
+
+<pre><code> pdfout_parser *pdfout_parser_json_new (fz_context *ctx, fz_stream *stm);
+
+ pdfout_emitter *pdfout_emitter_json_new (fz_context *ctx, fz_output *out);
+ </code></pre>
+
+<h2 id="Destructors">Destructors</h2>
+
+<pre><code> void pdfout_parser_drop (fz_context *ctx, pdfout_parser *parser);
+
+ void pdfout_emitter_drop (fz_context *ctx, pdfout_emitter *emitter);</code></pre>
+
+</body>
+</html>
+

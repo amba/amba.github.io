@@ -1,0 +1,255 @@
+
+<html>
+<head>
+<title></title>
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+<body>
+
+
+<h1 id="PDF-objects-in-MuPDF">PDF objects in MuPDF</h1>
+
+<h2 id="Object-types">Object types</h2>
+
+<dl>
+
+<dt><a href="#null-objects">null </a></dt>
+<dd>
+
+<p>represents the null PDF object.</p>
+
+</dd>
+<dt><a href="#bool-objects">bool </a></dt>
+<dd>
+
+<p>either true or false.</p>
+
+</dd>
+<dt><a href="#number-objects">number</a></dt>
+<dd>
+
+<dl>
+
+<dt>int</dt>
+<dd>
+
+<p>holds a C <code>int</code>.</p>
+
+</dd>
+<dt>int_offset</dt>
+<dd>
+
+<p>holds a <code>fz_off_t</code>.</p>
+
+</dd>
+<dt>real</dt>
+<dd>
+
+<p>holds a C <code>float</code>.</p>
+
+</dd>
+</dl>
+
+</dd>
+<dt><a href="#name-objects">name </a></dt>
+<dd>
+
+<p>holds a null-terminated string.</p>
+
+</dd>
+<dt><a href="#string-objects">string </a></dt>
+<dd>
+
+<p>holds a buffer and it&#39;s length.</p>
+
+</dd>
+<dt>array</dt>
+<dd>
+
+<p>holds a list of other objects.</p>
+
+</dd>
+<dt><a href="#dict-objects">dict </a></dt>
+<dd>
+
+<p>holds a list of key value pairs of other objects.</p>
+
+</dd>
+<dt>indirect</dt>
+<dd>
+
+<p>holds a pointer to an indirect object (object und generation numbers).</p>
+
+</dd>
+</dl>
+
+<h2 id="Common-properties-and-methods">Common properties and methods.</h2>
+
+<p>The opaque <code>pdf_obj *</code> type is used to represent all types of objects.</p>
+
+<p>Each object has a reference counter. The counter is incremented with</p>
+
+<pre><code> pdf_obj *pdf_keep_obj(fz_context *ctx, pdf_obj *obj);</code></pre>
+
+<p>and decreased with</p>
+
+<pre><code> void pdf_drop_obj(fz_context *ctx, pdf_obj *obj);</code></pre>
+
+<p>Once the counter gets 0, the object will be deallocated.</p>
+
+<p>TODO: flags marked, dirty, ...</p>
+
+<h2 id="Type-queries">Type queries</h2>
+
+<pre><code> int pdf_is_null(fz_context *ctx, pdf_obj *obj);
+ int pdf_is_bool(fz_context *ctx, pdf_obj *obj);
+ int pdf_is_int(fz_context *ctx, pdf_obj *obj);
+ int pdf_is_real(fz_context *ctx, pdf_obj *obj);
+ int pdf_is_number(fz_context *ctx, pdf_obj *obj);
+ int pdf_is_name(fz_context *ctx, pdf_obj *obj);
+ int pdf_is_string(fz_context *ctx, pdf_obj *obj);
+ int pdf_is_array(fz_context *ctx, pdf_obj *obj);
+ int pdf_is_dict(fz_context *ctx, pdf_obj *obj);
+ int pdf_is_indirect(fz_context *ctx, pdf_obj *obj);
+ int pdf_obj_num_is_stream(fz_context *ctx, pdf_document *doc, int num);
+ int pdf_is_stream(fz_context *ctx, pdf_obj *obj);</code></pre>
+
+<h2 id="null-objects">null objects</h2>
+
+<p>These are constructed with</p>
+
+<pre><code> pdf_obj *pdf_new_null(fz_context *ctx, pdf_document *doc);</code></pre>
+
+<h2 id="bool-objects">bool objects</h2>
+
+<p>These are constructed with</p>
+
+<pre><code> pdf_obj *pdf_new_bool(fz_context *ctx, pdf_document *doc, int b);</code></pre>
+
+<p>The value is read with</p>
+
+<pre><code> int pdf_to_bool(fz_context *ctx, pdf_obj *obj);</code></pre>
+
+<h2 id="number-objects">number objects</h2>
+
+<p>These are constructed with</p>
+
+<pre><code> pdf_obj *pdf_new_int(fz_context *ctx, pdf_document *doc, int i);
+ pdf_obj *pdf_new_int_offset(fz_context *ctx, pdf_document *doc, fz_off_t off);
+ pdf_obj *pdf_new_real(fz_context *ctx, pdf_document *doc, float f);</code></pre>
+
+<p>The values are read with</p>
+
+<pre><code> int pdf_to_int(fz_context *ctx, pdf_obj *obj);
+ fz_off_t pdf_to_offset(fz_context *ctx, pdf_obj *obj);
+ float pdf_to_real(fz_context *ctx, pdf_obj *obj);</code></pre>
+
+<h2 id="name-objects">name objects</h2>
+
+<p>These are created with</p>
+
+<pre><code> pdf_obj *pdf_new_name(fz_context *ctx, pdf_document *doc, const char *str);</code></pre>
+
+<p>The string in a name object is obtained with</p>
+
+<pre><code> char *pdf_to_name(fz_context *ctx, pdf_obj *obj);</code></pre>
+
+<p>The returned string is valid for the lifetime of <code>obj</code>. Return the empty string, if <code>obj</code> is not a name object.</p>
+
+<p>To compare name objects, you use</p>
+
+<pre><code> static inline int pdf_name_eq(fz_context *ctx, pdf_obj *a, pdf_obj *b);</code></pre>
+
+<h2 id="string-objects">string objects</h2>
+
+<p>These are created with</p>
+
+<pre><code> pdf_obj *pdf_new_string(fz_context *ctx, pdf_document *doc, const char *str, size_t len);</code></pre>
+
+<p>where <code>str</code> has to be encoded in either UTF-16BE with BOM (FEFF) or PDFDocEncoding.</p>
+
+<p>A string object&#39;s contents are obtained with the functions</p>
+
+<pre><code> char *pdf_to_str_buf(fz_context *ctx, pdf_obj *obj);
+ int pdf_to_str_len(fz_context *ctx, pdf_obj *obj);</code></pre>
+
+<p>The returned string is valid for the lifetime of <code>obj</code>. Return the empty string and <code>0</code>, respectively, if <code>obj</code> is not a string object.</p>
+
+<h2 id="dict-objects">dict objects</h2>
+
+<p>These are created with</p>
+
+<pre><code> pdf_obj *pdf_new_dict (fz_context *ctx, pdf_document *doc, int initialcap);</code></pre>
+
+<h3 id="Query-dicts">Query dicts</h3>
+
+<p>The number of key value pairs is queried with</p>
+
+<pre><code> int pdf_dict_len(fz_context *ctx, pdf_obj *dict);</code></pre>
+
+<p>To get the i-th key-value pair, use</p>
+
+<pre><code> pdf_obj *pdf_dict_get_key(fz_context *ctx, pdf_obj *dict, int idx);
+ pdf_obj *pdf_dict_get_val(fz_context *ctx, pdf_obj *dict, int idx);</code></pre>
+
+<p>There are several functions to get the value of a provided key:</p>
+
+<ul>
+
+<li><p></p>
+
+<pre><code> pdf_obj *pdf_dict_get(fz_context *ctx, pdf_obj *dict, pdf_obj *key);</code></pre>
+
+<p>The object <code>key</code> must be a name object.</p>
+
+</li>
+<li><p></p>
+
+<pre><code> pdf_obj *pdf_dict_gets(fz_context *ctx, pdf_obj *dict, const char *key);</code></pre>
+
+<p>If there is a key, which is a name object with name <code>key</code>, return it&#39;s value.</p>
+
+</li>
+<li><p></p>
+
+<pre><code> pdf_obj *pdf_dict_getp(fz_context *ctx, pdf_obj *dict, const char *path);</code></pre>
+
+<p><code>path</code> is a <code>/</code>-separated list of names. Call pdf_dict_gets repeatedly on each name in the list. For example, the result of</p>
+
+<pre><code> return pdf_dict_getp (ctx, trailer, &quot;Root/Pages/Count&quot;);</code></pre>
+
+<p>is equivalent to</p>
+
+<pre><code> pdf_obj *root = pdf_dict_gets (ctx, trailer, &quot;Root&quot;);
+ pdf_obj *pages = pdf_dict_gets (ctx, root, &quot;Pages&quot;);
+ return pdf_dict_gets (ctx, pages, &quot;Count&quot;);</code></pre>
+
+</li>
+<li><p></p>
+
+<pre><code> pdf_obj *pdf_dict_getl(fz_context *ctx, pdf_obj *dict, ...);</code></pre>
+
+<p>Similar to <code>pdf_dict_getp</code> but the list of name objects is given as a va_list.</p>
+
+</li>
+<li><p></p>
+
+<pre><code> pdf_obj *pdf_dict_geta(fz_context *ctx, pdf_obj *dict, pdf_obj *key, pdf_obj *abbrev);</code></pre>
+
+<p>Try a <code>pdf_dict_get(ctx, dict, key)</code>. If this produces a value, return it. Otherwise, return <code>pdf_dict_get(ctx, dict, abbrex)</code>. This is useful, if a key has an abbreviation. Example:</p>
+
+<pre><code> filters = pdf_dict_geta(ctx, stmobj, PDF_NAME_Filter, PDF_NAME_F);</code></pre>
+
+</li>
+<li><p></p>
+
+<pre><code> pdf_obj *pdf_dict_getsa(fz_context *ctx, pdf_obj *dict, const char *key, const char *abbrev);</code></pre>
+
+<p>Like <code>pdf_dict_geta</code>, but with string names.</p>
+
+</li>
+</ul>
+
+</body>
+</html>
+

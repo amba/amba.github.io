@@ -1,0 +1,209 @@
+
+<html>
+<head>
+<title></title>
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+<body>
+
+
+<h1 id="Buffers-and-streams">Buffers and streams</h1>
+
+<h2 id="Buffers">Buffers</h2>
+
+<p>A <code>fz_buffer</code> holds a dynamically allocated block of memory.</p>
+
+<p>A new <code>fz_buffer</code> is created with</p>
+
+<pre><code> fz_buffer *fz_new_buffer(fz_context *ctx, size_t capacity);</code></pre>
+
+<p>Increase the refcount with</p>
+
+<pre><code> fz_buffer *fz_keep_buffer(fz_context *ctx, fz_buffer *buf);</code></pre>
+
+<p>Drop the buffer with</p>
+
+<pre><code> void fz_drop_buffer(fz_context *ctx, fz_buffer *buf);</code></pre>
+
+<p>The <code>fz_buffer</code> struct has the following fields:</p>
+
+<pre><code> struct fz_buffer_s
+ {
+        int refs;
+        unsigned char *data;
+        size_t cap, len;
+        int unused_bits;
+        int shared;
+ };</code></pre>
+
+<h3 id="Writing-to-buffers">Writing to buffers</h3>
+
+<pre><code> void fz_write_buffer(fz_context *ctx, fz_buffer *buf, const void *data, size_t len);
+ void fz_write_buffer_byte(fz_context *ctx, fz_buffer *buf, int val);
+ size_t fz_buffer_printf(fz_context *ctx, fz_buffer *buffer, const char *fmt, ...);
+ size_t fz_buffer_vprintf(fz_context *ctx, fz_buffer *buffer, const char *fmt, va_list args);</code></pre>
+
+<p>See <a href="#Writing-to-output-streams">Writing to output streams</a> for details on the printf-like functions.</p>
+
+<h2 id="Output-streams">Output streams</h2>
+
+<p>The <code>fz_output</code> stream is a abstract output handle. It can output to files and <code>fz_buffers</code>.</p>
+
+<p>The following functions create a <code>fz_output</code>.</p>
+
+<pre><code> fz_output *fz_new_output_with_file_ptr(fz_context *ctx, FILE *output, int close);
+ fz_output *fz_new_output_with_path(fz_context *ctx, const char *filename, int
+ append);
+
+
+ fz_output *fz_new_output_with_buffer(fz_context *ctx, fz_buffer *buffer);</code></pre>
+
+<p>Increase the refcount of <code>buffer</code>.</p>
+
+<pre><code> void fz_drop_output(fz_context *ctx, fz_output *out);</code></pre>
+
+<p>Deallocate an output and drop/close the underlying object.</p>
+
+<h3 id="Writing-to-output-streams">Writing to output streams.</h3>
+
+<p>These all throw on write error.</p>
+
+<ul>
+
+<li><p></p>
+
+<pre><code> void fz_write(fz_context *ctx, fz_output *out, const void *data, size_t size);</code></pre>
+
+</li>
+<li><p></p>
+
+<pre><code> fz_putc(fz_context *ctx, fz_output *out, unsigned_char *x);</code></pre>
+
+</li>
+<li><p></p>
+
+<pre><code> fz_puts(fz_context *ctx, fz_output *out, const void *string);</code></pre>
+
+<p>Output string. Does not append a newline.</p>
+
+</li>
+<li><p></p>
+
+<pre><code> void fz_printf(fz_context *ctx, fz_output *out, const char *fmt, ...);
+ void fz_vprintf(fz_context *ctx, fz_output *out, const char *fmt, va_list ap);
+ size_t fz_vsnprintf(char *buffer, size_t space, const char *fmt, va_list args);
+ size_t fz_snprintf(char *buffer, size_t space, const char *fmt, ...);</code></pre>
+
+<p>For those, the allowed printf conversion specifiers are <code>%c, %d, %o, %s, %u, %x</code>. The only allowed modifier is zero padding, e.g. <code>%02d</code>.</p>
+
+<p>Custom conversion specifiers:</p>
+
+<dl>
+
+<dt><code>%f, %g</code></dt>
+<dd>
+
+<p>Return shortest possible decimal representation of a float.</p>
+
+</dd>
+<dt><code>%C</code></dt>
+<dd>
+
+<p>UTF-8 encoded int.</p>
+
+</dd>
+<dt><code>%M, %R, %P</code></dt>
+<dd>
+
+<p>output <code>fz_matrix*, fz_rect*, fz_point*</code> respectively.</p>
+
+</dd>
+<dt><code>%q, %(</code></dt>
+<dd>
+
+<p>output escaped strings in C/PDF syntax.</p>
+
+</dd>
+<dt><code>%ll{d,u,x}</code></dt>
+<dd>
+
+<p>indicate 64-bit values.</p>
+
+</dd>
+<dt><code>%z{d,u,x}</code></dt>
+<dd>
+
+<p>indicate <code>size_t</code> value.</p>
+
+</dd>
+<dt><code>%Z{d,u,x}</code></dt>
+<dd>
+
+<p>indicate <code>fz_off_t</code> value.</p>
+
+</dd>
+</dl>
+
+</li>
+</ul>
+
+<h3 id="Other-operations">Other operations</h3>
+
+<ul>
+
+<li><p></p>
+
+<pre><code> void fz_seek_output(fz_context *ctx, fz_output *out, fz_off_t off, int whence);</code></pre>
+
+</li>
+<li><p></p>
+
+<pre><code> fz_off_t fz_tell_output(fz_context *ctx, fz_output *out);</code></pre>
+
+</li>
+</ul>
+
+<h2 id="Input-streams">Input streams</h2>
+
+<pre><code> fz_stream *fz_open_buffer(fz_context *ctx, fz_buffer *buf);</code></pre>
+
+<p>Increase the refcount of <code>buf</code>.</p>
+
+<pre><code> fz_stream *fz_open_file_ptr(fz_context *ctx, FILE *file);</code></pre>
+
+<p>Will close <code>file</code> if the stream is dropped.</p>
+
+<pre><code> void fz_drop_stream(fz_context *ctx, fz_stream *stm);</code></pre>
+
+<p>Deallocate a stream and drop/close the underlying object.</p>
+
+<h3 id="Operations-on-input-streams">Operations on input streams</h3>
+
+<ul>
+
+<li><p></p>
+
+<pre><code> size_t fz_read(fz_context *ctx, fz_stream *stm, unsigned char *data, size_t len);</code></pre>
+
+<p>Read up to <code>len</code> bytes from the stream <code>stm</code>. Will throw on read error. Return the number of read bytes. If the return value is smaller than <code>len</code>, end-of-file was reached.</p>
+
+</li>
+<li><p></p>
+
+<pre><code> fz_off_t fz_tell(fz_context *ctx, fz_stream *stm);</code></pre>
+
+<p>Return the current reading position.</p>
+
+</li>
+<li><p></p>
+
+<pre><code> void fz_seek(fz_context *ctx, fz_stream *stm, fz_off_t offset, int whence);</code></pre>
+
+<p>Seek a stream. Like fseek.</p>
+
+</li>
+</ul>
+
+</body>
+</html>
+

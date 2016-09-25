@@ -1,0 +1,154 @@
+
+<html>
+<head>
+<title></title>
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+<body>
+
+
+<h1 id="Character-Set-Conversion">Character Set Conversion</h1>
+
+<p>It is possible to convert between any two of the following encodings:</p>
+
+<dl>
+
+<dt>ASCII</dt>
+<dd>
+
+</dd>
+<dt>UTF-8</dt>
+<dd>
+
+</dd>
+<dt>C</dt>
+<dd>
+
+<p>Alias for UTF-8.</p>
+
+</dd>
+<dt>UTF-16BE</dt>
+<dd>
+
+<p>Big-endian.</p>
+
+</dd>
+<dt>UTF-16LE</dt>
+<dd>
+
+<p>Little-endian.</p>
+
+</dd>
+<dt>UTF-16</dt>
+<dd>
+
+<p>Switches between BE and LE on FFFE/FEFF byte order marks, which can be everywhere in the stream. The default is big-endian.</p>
+
+</dd>
+<dt>UTF-32BE</dt>
+<dd>
+
+</dd>
+<dt>UTF-32LE</dt>
+<dd>
+
+</dd>
+<dt>UTF-32</dt>
+<dd>
+
+<p>Analogous to UTF-16.</p>
+
+</dd>
+<dt>PDFDOCENCODING</dt>
+<dd>
+
+</dd>
+<dt>PDFDOC</dt>
+<dd>
+
+<p>8-bit encoding as specified in Annex D.7 of the PDF spec. The codepoints 0x7f, 0x9f and 0xad are left undefined.</p>
+
+</dd>
+</dl>
+
+<h2 id="Conversion-Functions">Conversion Functions</h2>
+
+<ul>
+
+<li><p></p>
+
+<pre><code> void pdfout_char_conv_buffer (fz_context *ctx, const char *fromcode,
+                               const char *tocode, const char *src, int srclen,
+                               fz_buffer *buf)</code></pre>
+
+<p>This is the most generic function and used internally by all functions below.</p>
+
+<p>Convert the string <code>src</code> of length <code>srclen</code> from encoding <code>fromcode</code> to encoding <code>tocode</code>. The resulting bytes are appended to <code>buf</code>.</p>
+
+<p>Throw FZ_ERROR_ABORT if a codepoint is not valid in the target encoding. Throw FZ_ERROR_GENERIC on all other errors.</p>
+
+</li>
+<li><p></p>
+
+<pre><code> char *pdfout_char_conv (fz_context *ctx, const char *fromcode, const char *tocode,
+                         const char *src, int srclen, int *lengthp);</code></pre>
+
+<p>Like <code>pdfout_char_conv_buffer</code>, but returns it&#39;s result as a char-pointer. The length of the result is stored in <code>*lengthp</code>. The resulting string is always null-terminated.</p>
+
+</li>
+<li><p></p>
+
+<pre><code> pdf_obj *pdfout_utf8_to_str_obj (fz_context *ctx, pdf_document *doc,
+                                  const char *inbuf, int inbuf_len);</code></pre>
+
+<p>Convert UTF-8 string to PDF string object.</p>
+
+</li>
+<li><p></p>
+
+<pre><code> char *pdfout_str_obj_to_utf8 (fz_context *ctx, pdf_obj *string, int *len);</code></pre>
+
+<p>Convert PDF string object to UTF-8 string.</p>
+
+</li>
+<li><p></p>
+
+<pre><code> char *pdfout_pdf_to_utf8 (fz_context *ctx, const char *inbuf, int inbuf_len,
+                           int *outbuf_len);</code></pre>
+
+<p>Convert PDF string (either PDFDOC or UTF-16BE) to null-terminated UTF-8.</p>
+
+</li>
+<li><p></p>
+
+<pre><code> char *pdfout_utf8_to_pdf (fz_context *ctx, const char *inbuf, int inbuf_len,
+                           int *outbuf_len);</code></pre>
+
+<p>Convert UTF-8 to PDF string. If possible, use PDFDOCENCODING. If that fails, use UTF-16.</p>
+
+</li>
+</ul>
+
+<h2 id="Lightweight-UTF-8-support-functions">Lightweight UTF-8 support functions</h2>
+
+<ul>
+
+<li><p></p>
+
+<pre><code> char *pdfout_check_utf8 (const char *s, size_t n);</code></pre>
+
+<p>Check if the string <code>s</code> of length <code>n</code> contains valid UTF-8. If it contains invalid UTF-8, return a pointer to the first invalid unit. Return <code>NULL</code>, if the string is valid.</p>
+
+</li>
+<li><p></p>
+
+<pre><code> int pdfout_uctomb (fz_context *ctx, uint8_t *buf, ucs4_t uc, int n);</code></pre>
+
+<p>Convert the Unicode codepoint <code>uc</code> to UTF-8. Store the result in <code>buf</code>, which has length <code>n</code>. Throw for invalid codepoint or if <code>n</code> is too small. Always use <code>n = 4</code>.</p>
+
+</li>
+</ul>
+
+</body>
+</html>
+

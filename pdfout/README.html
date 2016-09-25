@@ -1,0 +1,64 @@
+
+<html>
+<head>
+<title></title>
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+<body>
+
+
+<h1 id="pdfout">pdfout</h1>
+
+<p>pdfout is a lightweight PDF toolkit written in C. It is heavily based on the <a href="http://mupdf.com">mupdf</a> library.</p>
+
+<h2 id="Features">Features</h2>
+
+<p>The functionality is organized into small subcommands. You can</p>
+
+<ul>
+
+<li><p>dump and modify outlines, page labels and keys of the information dictionary. These support JSON for input and output.</p>
+
+</li>
+<li><p>extract text</p>
+
+</li>
+<li><p>repair broken cross-reference tables</p>
+
+</li>
+</ul>
+
+<h2 id="Installing">Installing</h2>
+
+<p>Download and checkout the mupdf submodule:</p>
+
+<pre><code> user $ git clone git://github.com/amba/pdfout.git &amp;&amp; cd pdfout</code></pre>
+
+<p>Check out the mupdf submodule:</p>
+
+<pre><code> user $ ./make.pl submodules</code></pre>
+
+<p>Apart from mupdf, there are no thirdparty dependencies.</p>
+
+<p>Build and install with</p>
+
+<pre><code> user $ ./make.pl
+ user $ ./make.pl --install --prefix=$HOME/local</code></pre>
+
+<p>Now you can run</p>
+
+<pre><code> user $ pdfout --describe-commands</code></pre>
+
+<p>to list the available subcommands.</p>
+
+<h2 id="Copying">Copying</h2>
+
+<p>pdfout is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.</p>
+
+<p>Copyright (C) 2015-2016 AUTHORS</p>
+
+<p>See the <i>COPYRIGHT</i> file for full details on used libraries and code derived from other projects.</p>
+
+</body>
+</html>
+

@@ -1,0 +1,28 @@
+
+<html>
+<head>
+<title></title>
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+<body>
+
+
+<h1 id="Metadata-getters-and-setters">Metadata getters and setters</h1>
+
+<p>The setters receive a pdfout_data argument.</p>
+
+<p>The getters return a pdfout_data object.</p>
+
+<p>E.g.</p>
+
+<pre><code> void
+ pdfout_page_labels_set (fz_context *ctx, pdf_document *doc, pdfout_data *labels);
+ 
+ pdfout_data *
+ pdfout_page_labels_get (fz_context *ctx, pdf_document *doc);</code></pre>
+
+<p>Remove the data if the setter is given a <code>NULL</code> argument. Return a zero-length pdfout_data object in the getter, if the data is not contained in the PDF.</p>
+
+</body>
+</html>
+

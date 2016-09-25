@@ -1,0 +1,58 @@
+
+<html>
+<head>
+<title></title>
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+<body>
+
+
+<h1 id="Memory-allocators">Memory allocators</h1>
+
+<p>All of the following functions throw on error to allocate.</p>
+
+<ul>
+
+<li><p></p>
+
+<pre><code> void *fz_malloc(fz_context *ctx, size_t size);
+ void *fz_calloc(fz_context *ctx, size_t count, size_t size);</code></pre>
+
+<p>These are like <code>malloc</code> and <code>calloc</code>, but throw on error to allocate.</p>
+
+</li>
+<li><p></p>
+
+<pre><code> fz_malloc_struct(CTX, STRUCT);</code></pre>
+
+<p>macro frontend defined as</p>
+
+<pre><code> fz_calloc(CTX,1,sizeof(STRUCT));</code></pre>
+
+</li>
+<li><p></p>
+
+<pre><code> void *fz_malloc_array(fz_context *ctx, size_t count, size_t size);</code></pre>
+
+<p>Like <code>fz_calloc</code>, but do not zero the allocated memory.</p>
+
+</li>
+<li><p></p>
+
+<pre><code> void *fz_resize_array(fz_context *ctx, void *p, size_t count, size_t size);</code></pre>
+
+<p>Resize the existing block <code>p</code>. Return a pointer to the resized block. If <code>count</code> or <code>size</code> is <code>0</code>, free <code>p</code> and return <code>NULL</code>.</p>
+
+</li>
+<li><p></p>
+
+<pre><code> char *fz_strdup(fz_context *ctx, const char *s);</code></pre>
+
+<p>Duplicate a C string.</p>
+
+</li>
+</ul>
+
+</body>
+</html>
+

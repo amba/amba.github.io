@@ -1,0 +1,49 @@
+
+<html>
+<head>
+<title></title>
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+<body>
+
+
+<h1 id="PDF-documents">PDF documents</h1>
+
+<h2 id="Create">Create</h2>
+
+<pre><code> pdf_document *pdf_create_document(fz_context *ctx);</code></pre>
+
+<p>Create a fresh PDF document.</p>
+
+<h2 id="Open">Open</h2>
+
+<pre><code> pdf_document *pdf_open_document(fz_context *ctx, const char *filename);
+ pdf_document *pdf_open_document_with_stream(fz_context *ctx, fz_stream *file);</code></pre>
+
+<p>Read a PDF document from a file or stream.</p>
+
+<h2 id="Save">Save</h2>
+
+<pre><code> void pdf_write_document(fz_context *ctx, pdf_document *doc, fz_output *out, pdf_write_options *opts);
+ void pdf_save_document(fz_context *ctx, pdf_document *doc, const char *filename, pdf_write_options *opts);</code></pre>
+
+<p>Write a (possibly changed) document to a file or output stream.</p>
+
+<p><code>pdf_write_options</code> is a struct with the following fields:</p>
+
+<pre><code>        int do_incremental; /* Write just the changed objects. */
+        int do_pretty; /* Pretty-print dictionaries and arrays. */
+        int do_ascii; /* ASCII hex encode binary streams. */
+        int do_compress; /* Compress streams. */
+        int do_compress_images; /* Compress (or leave compressed) image streams. */
+        int do_compress_fonts; /* Compress (or leave compressed) font streams. */
+        int do_decompress; /* Decompress streams (except when compressing images/fonts). */
+        int do_garbage; /* Garbage collect objects before saving; 1=gc, 2=re-number, 3=de-duplicate. */
+        int do_linear; /* Write linearised. */
+        int do_clean; /* Sanitize content streams. */
+        int continue_on_error; /* If set, errors are (optionally) counted and writing continues. */
+        int *errors; /* Pointer to a place to store a count of errors */</code></pre>
+
+</body>
+</html>
+

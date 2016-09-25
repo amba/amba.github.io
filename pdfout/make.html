@@ -1,0 +1,84 @@
+
+<html>
+<head>
+<title></title>
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+<body>
+
+
+<h1 id="Building-and-testing-pdfout">Building and testing pdfout</h1>
+
+<p>This document describes the details of pdfout&#39;s build system.</p>
+
+<p>All build and test tasks are run with the <i>make.pl</i> script. It supports the following list of subcommands:</p>
+
+<h2 id="build">build</h2>
+
+<pre><code> ./make.pl build [OPTION]
+ or: ./make.pl [OPTION]</code></pre>
+
+<p>Build the pdfout binary. In a first step, this will build the mupdf submodule.</p>
+
+<p>The default build directory is <i>build</i>.</p>
+
+<pre><code> Options:
+      --out=OUTPUT_DIR        alternative build directory.
+      --cc=CC                 name of the C compiler
+  -c, --cflags=CFLAGS         additional compiler flags
+      --cppflags=CPPFLAGS     additional preprocessor flags
+      --ldflags=LDFLAGS       additional linker flags
+      --prefix=PREFIX         installation prefix
+      --install               install pdfout
+  -j, --jobs=JOBS             number of jobs used by make
+  -v, --verbose               Show build commands</code></pre>
+
+<h2 id="clean">clean</h2>
+
+<pre><code> ./make.pl clean [OPTION]</code></pre>
+
+<p>Clean the build directory. By default everything is cleaned. The options give you more fine-grained control.</p>
+
+<pre><code> Options:
+      --out=OUTPUT_DIR        target directory
+      --mupdf                 only clean the mupdf build
+      --pdfout                keep the mupdf build
+      --html                  only clean the doc output</code></pre>
+
+<h2 id="check">check</h2>
+
+<pre><code> ./make.pl check
+ or ./make.pl check --tests=&#39;info-dict.t page-count.t&#39;</code></pre>
+
+<p>Test a pdfout build. This will run all <i>*.t</i> files in the <i>test</i> directory.</p>
+
+<pre><code> Options:
+      --out=OUTPUT_DIR        build directory
+  -j, --jobs=JOBS             number of parallel jobs
+      --valgrind              run tests under valgrind
+  -t, --tests=TESTS           run only these tests</code></pre>
+
+<p>This requires <a href="https://metacpan.org/pod/Test::Files">Test::Files</a>.</p>
+
+<p>Using valgrind will only work, if the build does not use optimization.</p>
+
+<h2 id="doc">doc</h2>
+
+<pre><code> ./make.pl doc</code></pre>
+
+<p>Build the documentation. This will produce nicely formatted XHTML. By default, the output will be written into <i>build/html/</i>.</p>
+
+<p>This requires <a href="https://metacpan.org/pod/Pod::Simple::XHTML">Pod::Simple::XHTML</a>.</p>
+
+<pre><code> Options:
+      --out=OUTPUT_DIR        put output into OUTPUT_DIR/html</code></pre>
+
+<h2 id="submodules">submodules</h2>
+
+<pre><code> ./make.pl submodules</code></pre>
+
+<p>Check out the mupdf submodule and mupdf&#39;s own submodules.</p>
+
+</body>
+</html>
+
