@@ -11,7 +11,10 @@
 
 <p>This document describes the details of pdfout&#39;s build system.</p>
 
-<p>All build and test tasks are run with the <i>make.pl</i> script. It supports the following list of subcommands:</p>
+<p>All build and test tasks are run with the <i>make.pl</i> script. It supports the following list of subcommands, which can also be viewed by running these commands:</p>
+
+<pre><code> ./make.pl --help
+ or: ./make.pl -h</code></pre>
 
 <h2 id="build">build</h2>
 
@@ -74,6 +77,12 @@
 
 <pre><code> Options:
       --out=OUTPUT_DIR        put output into OUTPUT_DIR/html</code></pre>
+
+<h2 id="upload-doc">upload-doc</h2>
+
+<pre><code> ./make.pl upload-doc</code></pre>
+
+<p>Maintainer command to update the docs at <a href="https://amba.github.io/pdfout">https://amba.github.io/pdfout</a>.</p>
 
 <h2 id="submodules">submodules</h2>
 
