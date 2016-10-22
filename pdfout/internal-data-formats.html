@@ -48,8 +48,7 @@
 
 <p>Create a new scalar with</p>
 
-<pre><code> pdfout_data *pdfout_data_scalar_new (fz_context *ctx, const char *value,
-                                      int len);</code></pre>
+<pre><code> pdfout_data *pdfout_data_scalar_new (fz_context *ctx, const char *value, int len);</code></pre>
 
 <p>Return the value of a scalar with</p>
 
@@ -133,6 +132,19 @@
 <pre><code> void pdfout_data_drop (fz_context *ctx, pdfout_data *data);</code></pre>
 
 <p>Recursively free.</p>
+
+<h3 id="Comparison">Comparison</h3>
+
+<p>A deep comparison of two <code>pdfout_data</code> types is performed with the following function:</p>
+
+<pre><code> int pdfout_data_cmp (fz_context *ctx, pdfout_data *x, pdfout_data *y);</code></pre>
+
+<h3 id="Copying">Copying</h3>
+
+<p>A deep copy of a <code>pdfout_data</code> type is created by</p>
+
+<pre><code> pdfout_data *pdfout_data_copy (fz_context *ctx, pdfout_data *data);
+ </code></pre>
 
 <h1 id="Parsing-and-Emitting">Parsing and Emitting</h1>
 

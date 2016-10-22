@@ -28,6 +28,7 @@
   -c, --cflags=CFLAGS         additional compiler flags
       --cppflags=CPPFLAGS     additional preprocessor flags
       --ldflags=LDFLAGS       additional linker flags
+      --mupdf-cflags=CFLAGS   CFLAGS for mupdf. Defaults to &#39;-O2 -g&#39;
       --prefix=PREFIX         installation prefix
       --install               install pdfout
   -j, --jobs=JOBS             number of jobs used by make
@@ -56,7 +57,8 @@
       --out=OUTPUT_DIR        build directory
   -j, --jobs=JOBS             number of parallel jobs
       --valgrind              run tests under valgrind
-  -t, --tests=TESTS           run only these tests</code></pre>
+  -t, --tests=TESTS           run only these tests
+      --timer                 print elapsed time after each test</code></pre>
 
 <p>This requires <a href="https://metacpan.org/pod/Test::Files">Test::Files</a>.</p>
 

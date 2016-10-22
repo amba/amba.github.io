@@ -92,6 +92,17 @@
 
 <h2 id="IO-functions">IO functions</h2>
 
+<ul>
+
+<li><p></p>
+
+<pre><code> ssize_t pdfout_getline (fz_context *ctx, fz_buffer **buffer_ptr, fz_stream *stm);</code></pre>
+
+<p>Read a line from <code>stm</code>. Stops after the next <code>&#39;\n&#39;</code> or EOF. Return the length of the read string (including the newline) and copy it into <code>*buffer_ptr</code>. If <code>*buffer_ptr</code> is <code>NULL</code>, allocate a new buffer. Throw on read error.</p>
+
+</li>
+</ul>
+
 </body>
 </html>
 
