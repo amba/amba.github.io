@@ -90,6 +90,29 @@
 
 <p>Check out the mupdf submodule and mupdf&#39;s own submodules.</p>
 
+<h2 id="cover">cover</h2>
+
+<pre><code> ./make.pl cover -j4</code></pre>
+
+<p>Requires <a href="https://metacpan.org/pod/Devel::Cover">Devel::Cover</a> installed.</p>
+
+<p>Do coverage build with gcov in <i>cover-build</i>.</p>
+
+<p>Open output of gcov2perl in firefox.</p>
+
+<pre><code> Options:
+  -j, --jobs=JOBS             number of parallel jobs</code></pre>
+
+<p>This requires <a href="https://metacpan.org/pod/Test::Files">Test::Files</a>.</p>
+
+<p>Using valgrind will only work, if the build does not use optimization.</p>
+
+<h2 id="tidy">tidy</h2>
+
+<pre><code> ./make.pl tidy</code></pre>
+
+<p>Run perltidy on all perl files.</p>
+
 </body>
 </html>
 
